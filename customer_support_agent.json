@@ -1,0 +1,525 @@
+{
+  "name": "customer support agent",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFile",
+        "fileToWatch": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        480
+      ],
+      "id": "4ad9cf41-5e05-46a6-8d2b-6328f897cd33",
+      "name": "Google Drive Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        280
+      ],
+      "id": "f27a375e-d537-4f65-8b90-4f67df8c139f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "=",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -480,
+        380
+      ],
+      "id": "174e8c96-614f-42a0-a8b5-26339056c469",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "eG476QQFk0rKLTKt",
+          "name": "Dummy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "stomai-bot",
+          "mode": "list",
+          "cachedResultName": "stomai-bot"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.2,
+      "position": [
+        -200,
+        380
+      ],
+      "id": "77ebb8f4-6a80-412f-90e1-e4b0e49367e1",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "7OAH2Ne1HehUSG9r",
+          "name": "dummy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        160,
+        400
+      ],
+      "id": "2abfb91b-9d3b-4194-bbb1-a0399dff81ec",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        260,
+        560
+      ],
+      "id": "5edb82b3-ae74-4518-adb2-d4c5d5332cf5",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -100,
+        560
+      ],
+      "id": "701d22c1-86b7-4b6a-9004-618d8b7cba9d",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u8mYtLQXEj0jO2Pn",
+          "name": "Dummy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "webhook",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1040,
+        1100
+      ],
+      "id": "9e6ef686-af96-4cb1-ae03-5669dad4fe45",
+      "name": "When chat message received",
+      "webhookId": "6f53be2a-fbd0-4ef7-9c01-b65661165cb2"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemPromptTemplate": "You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question.\nIf you don't know the answer, just say that you don't know, don't try to make up an answer.\n----------------\nContext: {context}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainRetrievalQa",
+      "typeVersion": 1.6,
+      "position": [
+        -780,
+        920
+      ],
+      "id": "ea40dbf2-108e-4154-901c-2b6348c1f6a1",
+      "name": "Question and Answer Chain"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-001",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -740,
+        1140
+      ],
+      "id": "5240c91e-53f2-4c81-9536-df3cb4f8b876",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u8mYtLQXEj0jO2Pn",
+          "name": "Dummy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "stomai-bot",
+          "mode": "list",
+          "cachedResultName": "stomai-bot"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        940
+      ],
+      "id": "ed1d9949-b1fd-4c61-862f-eff4d8f34db2",
+      "name": "Pinecone Vector Store1",
+      "credentials": {
+        "pineconeApi": {
+          "id": "7OAH2Ne1HehUSG9r",
+          "name": "dummy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/text-embedding-004"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        1120
+      ],
+      "id": "c8b3c033-405f-4955-9fad-0d14426b314a",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u8mYtLQXEj0jO2Pn",
+          "name": "Dummy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "00b7da1a-138e-4188-942d-120b8db6789f",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1040,
+        820
+      ],
+      "id": "fefb38e4-7e63-4a41-9fa1-5c86bdd9e89f",
+      "name": "Webhook",
+      "webhookId": "00b7da1a-138e-4188-942d-120b8db6789f",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-1.5-flash-8b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        220,
+        1160
+      ],
+      "id": "5ed365f7-ca1a-4c26-a4d1-8af5a337abdc",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "u8mYtLQXEj0jO2Pn",
+          "name": "Dummy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=user question :{{ $('When chat message received').item.json.chatInput }}\nThe answer for the question :{{ $json.response }}\n",
+        "options": {
+          "systemMessage": "you are an helpfull marketing agent with a lot of experience \n\nyou get the question from the user and also the detail information from the question and answer chain\n\nanalyze the question and answer  from the input and form a very crispy and short paragraph for explaining about the company work and solve the user doubt . while listing the agents we have number them .always answer in plural form not in singular form \nif the user need an detail view of an specific agent then with the answer you get also add some extra points are tell them about where they are most usefull in common \nalso if the user ask for the pricing explain based on the requirements it vary for detail clarification ask can you book an appoimnent . \n\nwhen \n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        300,
+        920
+      ],
+      "id": "dc510940-141b-4e90-a440-d8e8dc02369a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "description": "call this tool only for handling appoinmnets in ggle calender\n\ncall this tool when you need to book an appoinment or to do any updation or deletion \n\n",
+        "source": "parameter"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        1120
+      ],
+      "id": "9e5dc56f-3654-4cf6-9788-aa5ca87d2f2d",
+      "name": "Call n8n Workflow Tool"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.retrieverVectorStore",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        940
+      ],
+      "id": "51d3824f-f7e4-4b77-9d17-276d18e3f2f6",
+      "name": "Vector Store Retriever"
+    },
+    {
+      "parameters": {
+        "content": "## RAG OF DATA UPDATION\n",
+        "height": 500,
+        "width": 1380
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -940,
+        220
+      ],
+      "typeVersion": 1,
+      "id": "37f68cb8-5843-4bee-b103-6355254d90cd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## CHAT BOT\n",
+        "height": 560,
+        "width": 1760,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1080,
+        740
+      ],
+      "typeVersion": 1,
+      "id": "9e893b53-6263-4dac-a581-e18bc18ad781",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store1": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Vector Store Retriever",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Question and Answer Chain": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call n8n Workflow Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Store Retriever": {
+      "ai_retriever": [
+        [
+          {
+            "node": "Question and Answer Chain",
+            "type": "ai_retriever",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "761e31ec-edec-46b2-b958-f914d4459895",
+  "meta": {
+    "templateId": "self-building-ai-agent",
+    "templateCredsSetupCompleted": true,
+    "instanceId": "255155a8f6e7cd8fe3a295c62fe758dc245a48b5b72c2b013faf015f750473fa"
+  },
+  "id": "urtkXfahWNV4R3vC",
+  "tags": []
+}
